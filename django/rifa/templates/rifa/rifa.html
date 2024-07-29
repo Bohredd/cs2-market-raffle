@@ -13,18 +13,18 @@
             cursor: pointer;
         }
         .clickable-row:hover {
-            border: 2px solid #000; /* Adiciona uma borda de 2px preta */
+            border: 2px solid #000;
         }
     </style>
 </head>
 <body>
     <div class="container mt-5">
         <h1>Rifa</h1>
-        <p>Valor do número: R${{ rifa.valor_numero }}</p>
-        <p>Valor Total da Rifa R$ <span>{{ rifa.valor_rifa }}</span></p>
+        <p>Valor do Número: <strong>R$ {{ rifa.valor_numero }} </strong> </p>
+        <p>Valor Total da Rifa: <strong> R$ {{ rifa.valor_rifa }} </strong> </span></p>
         <h3>Itens Sorteados</h3>
         {% for item in rifa.items.all %}
-            <p>{{ item }} R$<span>{{ item.valor }}</span></p>
+            <p>{{ item }} R$<span>{{ item.valor }}</span> X <strong> {{item.mercado_relacionado}} </strong> </p>
         {% endfor %}
         <h3>Números</h3>
 
