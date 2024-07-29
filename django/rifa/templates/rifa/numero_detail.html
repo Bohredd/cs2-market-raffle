@@ -1,0 +1,21 @@
+{% if numero.status == 'D' %}
+    <p><strong>Número:</strong> {{ numero.numero }}</p>
+    <p><strong>Preço:</strong> R$ {{ rifa.valor_numero }}</p>
+    <p><strong>Status:</strong> {{ numero.get_status_display }}</p>
+    <button type="button" class="btn btn-primary"
+        hx-post="{% url 'comprar_numero' rifa.id numero.id %}"
+        hx-params="id:numero-id"
+        hx-target="#itemModal .modal-body"
+        hx-trigger="click"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+        data-bs-dismiss="modal">
+        Confirmar Compra
+    </button>
+</div>
+{% else %}
+    <p><strong>Número:</strong> {{ numero.numero }}</p>
+    <p><strong>Comprador:</strong> {{ numero.comprador }}</p>
+    <p><strong>Preço:</strong> R$ {{ rifa.valor_numero }}</p>
+    <p><strong>Data de Aquisição:</strong> {{ numero.data_aquisicao }}</p>
+    <p><strong>Status:</strong> {{ numero.get_status_display }}</p>
+{% endif %}
