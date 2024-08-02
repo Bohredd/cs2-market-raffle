@@ -10,3 +10,12 @@ class Item(models.Model):
 
     def __str__(self):
         return self.nome
+    
+
+class ItemRifado(models.Model):
+
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    retirado = models.BooleanField(default=False)
+    data_retirada = models.DateTimeField(null=True, blank=True)
+    rifa_relacionada = models.ForeignKey('rifa.Rifa', on_delete=models.CASCADE)
+    numero_relacionado = models.ForeignKey('rifa.NumeroVendido', on_delete=models.CASCADE, null=True, blank=True)

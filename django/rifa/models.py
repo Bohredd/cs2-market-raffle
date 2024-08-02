@@ -2,6 +2,7 @@ from django.db import models
 import random
 from django.utils import timezone
 from config.models import Conta
+from django.core.mail import send_mail
 
 class NumeroVendido(models.Model):
     numero = models.IntegerField()
@@ -27,6 +28,13 @@ class NumeroVendido(models.Model):
             self.data_aquisicao = timezone.now()
             self.save()
             Conta.objects.get(nome='Rifas').saldo += self.rifa_relacionada.valor_numero
+    
+    def cancelar_reserva(self):
+        if self.status == 'R':
+            self.status = 'D'
+            self.comprador = None
+            self.data_aquisicao = None
+            self.save()
 
     def reservar_numero(self, comprador):
         if self.status == 'D':
@@ -153,3 +161,36 @@ class Rifa(models.Model):
             self.numeros.add(numero_vendido)
         
         self.save()
+
+
+class SolicitacaoCompra(models.Model):
+
+    numero = models.ForeignKey(NumeroVendido, on_delete=models.CASCADE)
+    data_solicitacao = models.DateTimeField(auto_now_add=True)
+    usuario_solcitante = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+    resolvido = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.numero} - {self.data_solicitacao} - {self.usuario_solcitante}'
+    
+    def send_mail(self):    
+        # vai enviar email para o comprador da rifa
+
+        comprador = self.numero.comprador
+        subject = 'Solicitação de compra de número'
+        message = f'Olá {comprador}, sua solicitação de compra do número {self.numero} foi {self.resolvido}.'
+        email_from = 'nos'
+        recipient = [comprador.email]
+        send_mail(subject, message, email_from, recipient, fail_silently=False)
+
+    def resolver_solicitacao(self, status: str):
+
+        if status == 'Aprovado':
+            self.numero.validar_pagamento()
+            self.resolvido = True
+            self.save()
+        elif status == 'Rejeitado':
+            self.resolvido = True
+            self.numero.cancelar_reserva()
+            self.save()
