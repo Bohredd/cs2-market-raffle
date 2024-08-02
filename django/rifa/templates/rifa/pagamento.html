@@ -1,4 +1,9 @@
 {% if qr_code %}
-    <p><strong>Imagem:</strong></p>
+    <p><strong>QR Code Pix do Valor de R$ <strong> {{rifa.valor_numero}} </strong> </strong></p>
     <img src="data:image/png;base64,{{ qr_code }}" alt="Imagem gerada">
-{% endif %}
+    <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="btn-paguei"
+    hx-post="{% url 'reservar_numero' numero.id %}"
+    hx-trigger="click"
+    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    Paguei!
+</button>{% endif %}

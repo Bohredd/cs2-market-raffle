@@ -14,7 +14,7 @@
             cursor: pointer;
         }
         .clickable-row:hover {
-            border: 2px solid #000;
+            border: 1px solid #000;
         }
     </style>
 </head>
@@ -41,7 +41,7 @@
             <tbody>
                 {% for numero in Numeros %}
                 <tr class="{% if numero.status != 'V' and numero.status != 'R' %}clickable-row{% endif %} {% if numero.status == 'V' %}table-danger{% elif numero.status == 'R' %}table-warning{% else %}table-success{% endif %}"
-                    hx-get="{% url 'numero_detail' rifa.id numero.id %}" 
+                    hx-get="{% url 'numero_detail' numero.id %}" 
                     hx-target="#itemModal .modal-body" 
                     hx-trigger="click"
                     data-bs-toggle="modal"
@@ -50,12 +50,16 @@
                     <td>{{ numero.numero }}</td>
                     {% if numero.comprador %}
                         <td>{{ numero.comprador }}</td>
+                    {% elif numero.status == 'R' %}
+                        <td> Número Reservado </td>
                     {% else %}
                         <td>Número disponível para compra.</td>
                     {% endif %}
                     <td>{{ rifa.valor_numero }}</td>
                     {% if numero.data_aquisicao %}
                         <td>{{ numero.data_aquisicao }}</td>
+                    {% elif numero.status == 'R' %}
+                        <td> Número Reservado </td>
                     {% else %}
                         <td>Número disponível para compra.</td>
                     {% endif %}
@@ -85,6 +89,11 @@
             </div>
         </div>
     </div>
-    </script>
 </body>
 </html>
+
+<script>
+    if ({{refresh}} == 1) {
+        window.location.reload(true);
+    }
+</script>
